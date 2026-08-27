@@ -33,7 +33,6 @@ public class DevicesRepository(DevicesDbContext context) : IDeviceRepository
 
     public async Task UpdateAsync(Device device, CancellationToken cancellationToken)
     {
-        context.Devices.Update(device);
         await context.SaveChangesAsync(cancellationToken);
     }
 

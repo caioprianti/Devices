@@ -46,18 +46,26 @@ public sealed class Device
 
     public Result Update(string? name, string? brand, DeviceState? state)
     {
-        if (state.HasValue)
-            State = state.Value;
-        
-        if (State == DeviceState.InUse)
-            return Result.Failure(
-                DeviceErrors.CannotUpdateInUse);
+        var isNameChanging =
+            name is not null && Name != name;
+
+        var isBrandChanging =
+            brand is not null && Brand != brand;
+
+        if (State == DeviceState.InUse &&
+            (isNameChanging || isBrandChanging))
+        {
+            return Result.Failure(DeviceErrors.CannotUpdateInUse);
+        }
 
         if (!string.IsNullOrEmpty(name))
             Name = name;
         
         if (!string.IsNullOrEmpty(brand))
             Brand = brand;
+
+        if (state.HasValue)
+            State = state.Value;
 
         return Result.Success();
     }

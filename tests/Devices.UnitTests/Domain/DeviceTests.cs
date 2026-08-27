@@ -46,6 +46,48 @@ public sealed class DeviceTests
     }
 
     [Fact]
+    public void Update_WhenDeviceIsInUseAndNameChanges_ShouldReturnFailure()
+    {
+        // Arrange
+        var device = Device.Create(
+            "TestName",
+            "TestBrand",
+            DeviceState.InUse).Value!;
+
+        // Act
+        var result = device.Update(
+            "Updated name",
+            "TestBrand",
+            DeviceState.Inactive);
+
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.Equal(DeviceErrors.CannotUpdateInUse, result.Error);
+        Assert.Equal("TestName", device.Name);
+        Assert.Equal(DeviceState.InUse, device.State);
+    }
+
+    [Fact]
+    public void Update_WhenDeviceIsAvailable_ShouldAllowInUseState()
+    {
+        // Arrange
+        var device = Device.Create(
+            "TestName",
+            "TestBrand",
+            DeviceState.Available).Value!;
+
+        // Act
+        var result = device.Update(
+            "TestName",
+            "TestBrand",
+            DeviceState.InUse);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Equal(DeviceState.InUse, device.State);
+    }
+
+    [Fact]
     public void Patch_WhenDeviceIsInUseAndNameChanges_ShouldReturnFailure()
     {
         // Arrange
