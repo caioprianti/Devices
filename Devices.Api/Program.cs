@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Devices.Application;
 using Devices.Api.ExceptionHandling;
+using Devices.Api.Extensions;
 using Devices.Api.ModelBinding;
 using Devices.Api.Validators.Devices;
 using Devices.Infrastructure;
@@ -47,6 +48,8 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+await app.ApplyMigrationsAsync();
 
 app.UseExceptionHandler();
 
