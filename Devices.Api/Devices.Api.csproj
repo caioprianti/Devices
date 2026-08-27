@@ -29,4 +29,8 @@
       <ProjectReference Include="..\Devices.Infrastructure\Devices.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Devices.Api.http" />
+    </ItemGroup>
+
 </Project>
