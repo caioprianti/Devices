@@ -27,7 +27,7 @@ public sealed class PatchDeviceCommandHandler(
             return ResultT<DeviceResponse>.Failure(DeviceErrors.NotFound);
         }
 
-        var patchResult = device.Update(
+        var patchResult = device.Patch(
             command.Name,
             command.Brand,
             command.State);

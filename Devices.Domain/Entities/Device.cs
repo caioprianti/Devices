@@ -32,10 +32,7 @@ public sealed class Device
         CreationTime = creationTime;
     }
 
-    public static ResultT<Device> Create(
-        string name,
-        string brand,
-        DeviceState state)
+    public static ResultT<Device> Create(string name, string brand, DeviceState state)
     {
         var device = new Device(
             Guid.NewGuid(),
@@ -61,6 +58,32 @@ public sealed class Device
         
         if (!string.IsNullOrEmpty(brand))
             Brand = brand;
+
+        return Result.Success();
+    }
+    
+    public Result Patch(string? name, string? brand, DeviceState? state)
+    {
+        var isNameChanging =
+            name is not null && Name != name;
+
+        var isBrandChanging =
+            brand is not null && Brand != brand;
+
+        if (State == DeviceState.InUse &&
+            (isNameChanging || isBrandChanging))
+        {
+            return Result.Failure(DeviceErrors.CannotUpdateInUse);
+        }
+
+        if (name is not null)
+            Name = name;
+
+        if (brand is not null)
+            Brand = brand;
+
+        if (state.HasValue)
+            State = state.Value;
 
         return Result.Success();
     }
