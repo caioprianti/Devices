@@ -47,24 +47,20 @@ public sealed class Device
         return ResultT<Device>.Success(device);
     }
 
-    public Result UpdateName(string name)
+    public Result Update(string? name, string? brand, DeviceState? state)
     {
         if (State == DeviceState.InUse)
             return Result.Failure(
                 DeviceErrors.CannotUpdateInUse);
 
-        Name = name;
-
-        return Result.Success();
-    }
-
-    public Result UpdateBrand(string brand)
-    {
-        if (State == DeviceState.InUse)
-            return Result.Failure(
-                DeviceErrors.CannotUpdateInUse);
-
-        Brand = brand;
+        if (!string.IsNullOrEmpty(name))
+            Name = name;
+        
+        if (!string.IsNullOrEmpty(brand))
+            Brand = brand;
+        
+        if (state.HasValue)
+            State = state.Value;
 
         return Result.Success();
     }

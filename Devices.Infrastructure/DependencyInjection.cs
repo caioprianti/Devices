@@ -1,4 +1,6 @@
+using Devices.Application.Abstractions;
 using Devices.Infrastructure.Database;
+using Devices.Infrastructure.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,8 @@ public static class DependencyInjection
 
         services.AddDbContext<DevicesDbContext>(options =>
             options.UseNpgsql(connectionString));
+
+        services.AddScoped<IDeviceRepository, DevicesRepository>();
         
         return services;
     }

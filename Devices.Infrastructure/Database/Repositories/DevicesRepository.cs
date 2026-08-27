@@ -7,37 +7,28 @@ namespace Devices.Infrastructure.Database.Repositories;
 
 public class DevicesRepository(DevicesDbContext context) : IDeviceRepository
 {
-
-    public async Task<List<Device>?> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<List<Device>?> GetAsync(string? brand, DeviceState? state, CancellationToken cancellationToken)
     {
-        return await context.Devices
-            .AsNoTracking()
+        var query = context.Devices
+            .AsNoTracking();
+        
+        if (!string.IsNullOrEmpty(brand))
+            query = query.Where(x => x.Brand == brand);
+        
+        if (state != null)
+            query = query.Where(x => x.State == state);
+        
+        return await query
+            .OrderBy(x => x.CreationTime)
             .ToListAsync(cancellationToken);
     }
-    
+
     public async Task<Device?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await context.Devices
             .FirstOrDefaultAsync(
                 x => x.Id == id,
                 cancellationToken);
-    }
-
-    public async Task<List<Device>?> GetByBrandAsync(string brand, CancellationToken cancellationToken)
-    {
-        return await context.Devices
-            .AsNoTracking()
-            .Where(x => x.Brand == brand)
-            .ToListAsync(cancellationToken);
-
-    }
-
-    public async Task<List<Device>?> GetByStateAsync(DeviceState state, CancellationToken cancellationToken)
-    {
-        return await context.Devices
-            .AsNoTracking()
-            .Where(x => x.State == state)
-            .ToListAsync(cancellationToken);
     }
 
     public async Task UpdateAsync(Device device, CancellationToken cancellationToken)
@@ -52,7 +43,7 @@ public class DevicesRepository(DevicesDbContext context) : IDeviceRepository
         await context.SaveChangesAsync(cancellationToken);
     }
     
-    public async Task Remove(Device device, CancellationToken cancellationToken)
+    public async Task RemoveAsync(Device device, CancellationToken cancellationToken)
     {
         context.Devices.Remove(device);
         await context.SaveChangesAsync(cancellationToken);
