@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Devices.Application;
+using Devices.Api.ExceptionHandling;
 using Devices.Api.ModelBinding;
 using Devices.Api.Validators.Devices;
 using Devices.Infrastructure;
@@ -22,6 +23,7 @@ builder.Services
             new JsonStringEnumConverter(JsonNamingPolicy.KebabCaseLower));
     });
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateDeviceRequestValidator>();
